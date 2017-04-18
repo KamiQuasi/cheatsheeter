@@ -15,83 +15,41 @@
 package main
 
 import (
-	"bytes"
-	"encoding/xml"
 	"flag"
 	"fmt"
-	"html/template"
-	"io/ioutil"
+	loader "github.com/KamiQuasi/cheatsheeter/content-loader"
+	parser "github.com/KamiQuasi/cheatsheeter/parser"
+	storage "github.com/KamiQuasi/cheatsheeter/storage"
 	"log"
-	"net/http"
-	"os"
-	"path/filepath"
 )
 
-type cheatsheet struct {
-	Title string `xml:"title,attr"`
-	Intro intro  `xml:"intro"`
-	Items []item `xml:"item"`
-}
+var (
+	file, out string
+	csStorage = storage.NewHtmlStorage()
+)
 
-type intro struct {
-	Description string `xml:"description"`
-}
-
-type item struct {
-	Skip        bool    `xml:"skip,attr"`
-	Label       string  `xml:"label,attr"`
-	Title       string  `xml:"title,attr"`
-	Description string  `xml:"description"`
-	Action      action  `xml:"action"`
-	Command     command `xml:"command"`
-	Subitems    []item  `xml:"subitem"`
-}
-
-type command struct {
-	Required      bool   `xml:"required,attr"`
-	Returns       string `xml:"returns,attr"`
-	Serialization string `xml:"serialization,attr"`
-}
-
-type action struct {
-	PluginID string `xml:"pluginId,attr"`
-	Class    string `xml:"class,attr"`
-	Param1   string `xml:"param1,attr"`
-	Param2   string `xml:"param2,attr"`
-}
-
-func main() {
-	var file, out string
+func Init() {
 	flag.StringVar(&file, "file", "", "URL of cheatsheet XML")
 	flag.StringVar(&out, "out", "", "Name of new HTML file (without extension)")
 	flag.Parse()
+}
 
-	if len(file) > 0 {
-		response, err := http.Get(file)
-		if err != nil {
-			log.Fatal(err)
-		} else {
-			defer response.Body.Close()
-			xmlFile, err := ioutil.ReadAll(response.Body)
-			if err != nil {
-				panic(err.Error())
-			}
-			var cs cheatsheet
-			xml.Unmarshal(xmlFile, &cs)
-			fmt.Println(cs.Title)
-			t, _ := template.ParseFiles("cheatsheet.html")
-			var tpl bytes.Buffer
-			if err := t.Execute(&tpl, cs); err != nil {
-				log.Fatal(err)
-			}
+func main() {
+	Init()
 
-			cspath := filepath.Join(".", "cheatsheets")
-			os.MkdirAll(cspath, os.ModePerm)
+	xmlFileBytes := loader.LoadContent(file)
 
-			ioutil.WriteFile(fmt.Sprintf("cheatsheets/%s", out), tpl.Bytes(), 0644)
-		}
-	} else {
-		log.Fatal("Please enter file URL")
+	result, parseError := parser.Parse(xmlFileBytes)
+	if parseError != nil {
+		log.Fatalf("Failed to parse docs. Cause: '%s'\n", parseError.Error())
 	}
 
+	fmt.Println("Content successfully parsed.")
+	if out == "" {
+		fmt.Println(string(result))
+	} else {
+		stg := csStorage.Store(result, out)
+		fmt.Printf("Result saved by path '%s'\n", stg.Path)
+	}
+	fmt.Println("Application completed task.")
 }
