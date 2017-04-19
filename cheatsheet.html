@@ -5,7 +5,7 @@
     <title>{{ .Title }}</title>
 </head>
 <body>
-    <p>{{ .Intro.Description }}</p>
+    <p>{{ .Intro.Description.Value }}</p>
     <ol>
         {{range $item := .Items }}
         <li>
@@ -13,7 +13,7 @@
                 {{if $item.Skip}}<li>Skip - {{ $item.Skip }}</li>{{end}}
                 {{if $item.Label }}<li>Label - {{ $item.Label }}</li>{{end}}
                 {{if $item.Title }}<li>Title - {{ $item.Title }}</li>{{end}}
-                {{if $item.Description }}<li>Description - {{ $item.Description }}</li>{{end}}
+                {{if $item.Description.Value }}<li>Description - {{ $item.Description.Value }}</li>{{end}}
                 {{if $item.Action }}<li>Action - 
                     <ul>
                         {{if $item.Action.PluginID }}<li>PluginID - {{ $item.Action.PluginID }}</li>{{end}}
@@ -37,7 +37,7 @@
                                 {{if $subitem.Skip }}<li>Skip - {{ $subitem.Skip }}</li>{{end}}
                                 {{if $subitem.Label }}<li>Label - {{ $subitem.Label }}</li>{{end}}
                                 {{if $subitem.Title }}<li>Title - {{ $subitem.Title }}</li>{{end}}
-                                {{if $subitem.Description }}<li>Description - {{ $subitem.Description }}</li>{{end}}
+                                {{if $subitem.Description.Value }}<li>Description - {{ $subitem.Description.Value }}</li>{{end}}
                                 {{if $subitem.Action }}
                                 <li>Action - 
                                     <ul>

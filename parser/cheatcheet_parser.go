@@ -36,17 +36,22 @@ type cheatsheet struct {
 }
 
 type intro struct {
-	Description string `xml:"description"`
+	Description htmlValue `xml:"description"`
+}
+
+//workaround to disable skipping html tags.
+type htmlValue struct {
+	Value template.HTML `xml:",innerxml"`
 }
 
 type item struct {
-	Skip        bool    `xml:"skip,attr"`
-	Label       string  `xml:"label,attr"`
-	Title       string  `xml:"title,attr"`
-	Description string  `xml:"description"`
-	Action      action  `xml:"action"`
-	Command     command `xml:"command"`
-	Subitems    []item  `xml:"subitem"`
+	Skip        bool      `xml:"skip,attr"`
+	Label       string    `xml:"label,attr"`
+	Title       string    `xml:"title,attr"`
+	Description htmlValue `xml:"description"`
+	Action      action    `xml:"action"`
+	Command     command   `xml:"command"`
+	Subitems    []item    `xml:"subitem"`
 }
 
 type command struct {
