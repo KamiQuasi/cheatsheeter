@@ -2,70 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ .Title }}</title>
+    <title>Quick docs</title>
 </head>
+<style>
+    p {
+        line-height: 1.3;
+    }
+</style>
 <body>
+    <p><b>{{ .Title }}</b></p>
     <p>{{ .Intro.Description.Value }}</p>
-    <ol>
-        {{range $item := .Items }}
-        <li>
-            <ul>
-                {{if $item.Skip}}<li>Skip - {{ $item.Skip }}</li>{{end}}
-                {{if $item.Label }}<li>Label - {{ $item.Label }}</li>{{end}}
-                {{if $item.Title }}<li>Title - {{ $item.Title }}</li>{{end}}
-                {{if $item.Description.Value }}<li>Description - {{ $item.Description.Value }}</li>{{end}}
-                {{if $item.Action }}<li>Action - 
+    <div>
+        <ul style="padding-left:0;" >
+            <li style="list-style: none; padding-left:10px">
+                {{range $item := .Items }}
+                    {{if $item.Title }}<p><b>{{ $item.Title }}</b></p>{{end}}
+                {{if $item.Description.Value }}<p>{{ $item.Description.Value }}</p>{{end}}
+                    {{if $item.Label }}<p>{{ $item.Label }}</p>{{end}}
                     <ul>
-                        {{if $item.Action.PluginID }}<li>PluginID - {{ $item.Action.PluginID }}</li>{{end}}
-                        {{if $item.Action.Class }}<li>Class - {{ $item.Action.Class }}</li>{{end}}
-                        {{if $item.Action.Param1 }}<li>Param1 - {{ $item.Action.Param1 }}</li>{{end}}
-                        {{if $item.Action.Param2 }}<li>Param2 - {{ $item.Action.Param2 }}</li>{{end}}
-                    </ul>
-                </li>{{end}}
-                {{if $item.Command }}<li>Command -
-                    <ul>
-                        {{if $item.Command.Required }}<li>Required - {{ $item.Command.Required }}</li>{{end}}
-                        {{if $item.Command.Returns }}<li>Returns - {{ $item.Command.Returns }}</li>{{end}}
-                        {{if $item.Command.Serialization }}<li>Serialization - {{ $item.Command.Serialization }}</li>{{end}}
-                    </ul>
-                </li>{{end}}
-                {{if $item.Subitems }}<li>Sub Items - 
-                    <ol>
-                        {{range $subitem := $item.Subitems }}
-                        <li>
-                            <ul>
-                                {{if $subitem.Skip }}<li>Skip - {{ $subitem.Skip }}</li>{{end}}
-                                {{if $subitem.Label }}<li>Label - {{ $subitem.Label }}</li>{{end}}
-                                {{if $subitem.Title }}<li>Title - {{ $subitem.Title }}</li>{{end}}
-                                {{if $subitem.Description.Value }}<li>Description - {{ $subitem.Description.Value }}</li>{{end}}
-                                {{if $subitem.Action }}
-                                <li>Action - 
-                                    <ul>
-                                        {{if $subitem.Action.PluginID }}<li>PluginID - {{ $subitem.Action.PluginID }}</li>{{end}}
-                                        {{if $subitem.Action.Class }}<li>Class - {{ $subitem.Action.Class }}</li>{{end}}
-                                        {{if $subitem.Action.Param1 }}<li>Param1 - {{ $subitem.Action.Param1 }}</li>{{end}}
-                                        {{if $subitem.Action.Param2 }}<li>Param2 - {{ $subitem.Action.Param2 }}</li>{{end}}
-                                    </ul>
-                                </li>
-                                {{end}}
-                                {{if $subitem.Command }}
-                                <li>Command -
-                                    <ul>
-                                        {{if $subitem.Command.Required }}<li>Required - {{ $subitem.Command.Required }}</li>{{end}}
-                                        {{if $subitem.Command.Returns }}<li>Returns - {{ $subitem.Command.Returns }}</li>{{end}}
-                                        {{if $subitem.Command.Serialization }}<li>Serialization - {{ $subitem.Command.Serialization }}</li>{{end}}
-                                    </ul>
-                                </li>
-                                {{end}}
-                            </ul>
+                        <li style="list-style: none;">
+                            {{if $item.Subitems }}
+
+                            {{range $subitem := $item.Subitems }}
+                            {{if $subitem.Title }}<p><b>Title - {{ $subitem.Title }}</b></p>{{end}}
+                            {{if $subitem.Description.Value }}<p>{{ $subitem.Description.Value }}</p>{{end}}
+                            {{if $subitem.Label }}<p>{{ $subitem.Label }}</p>{{end}}
+                            {{end}}
+                            {{end}}
                         </li>
-                        {{end}}
-                    </ol>
-                </li>{{end}}
-            </ul>
-        </li>
-        {{end}}
-    </ol>
+                    </ul>
+                {{end}}
+            </li>
+        </ul>
+    </div>
+
 </body>
 </html>
 <!--
